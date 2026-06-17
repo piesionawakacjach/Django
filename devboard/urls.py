@@ -24,8 +24,6 @@ app_name = "devboard"
 
 #from devboard import views
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("accounts/", include("django.contrib.auth.urls")),
-    path("", include("devboard.urls", namespace="devboard"))
+    path("", views.ProjectListView.as_view(), name="lista-project"),
+    path("project/<int:pk>/", ProjectDetailView.as_view(), name="project-detail")
 ]
-
