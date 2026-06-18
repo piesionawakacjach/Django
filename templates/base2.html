@@ -267,10 +267,12 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a href="{% url 'login' %}" class="btn btn-gradient">
+                         <form action="{% url 'login' %}" method="get" class="d-inline">
+                            <button type="submit" class="btn btn-gradient">
                                 <i class="fas fa-sign-in-alt"></i>
                                 <span>Zaloguj</span>
-                            </a>
+                            </button>
+                        </form>
                         </li>
                     {% endif %}
                 </ul>

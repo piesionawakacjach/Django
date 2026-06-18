@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DevBoard Amiga{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            scroll-behavior: smooth;
+            image-rendering: pixelated;
+        }
+
+        :root {
+            --amiga-blue: #0050a4;
+            --amiga-light-blue: #4aa3ff;
+            --amiga-orange: #ff8c00;
+            --amiga-red: #d62828;
+            --amiga-black: #050505;
+            --amiga-white: #f5f5f5;
+            --amiga-gray: #b8b8b8;
+            --amiga-dark-gray: #3a3a3a;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255,255,255,0.03) 0px,
+                    rgba(255,255,255,0.03) 1px,
+                    transparent 1px,
+                    transparent 4px
+                ),
+                linear-gradient(135deg, #001b44 0%, #0050a4 45%, #ff8c00 100%) !important;
+            color: var(--amiga-white);
+            font-family: "Courier New", monospace;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.04) 0px,
+                    rgba(255,255,255,0.04) 2px,
+                    transparent 2px,
+                    transparent 6px
+                );
+            mix-blend-mode: overlay;
+            opacity: 0.4;
+            z-index: 9999;
+        }
+
+        .navbar-custom {
+            background: var(--amiga-gray) !important;
+            border-bottom: 4px solid var(--amiga-black);
+            box-shadow:
+                inset 3px 3px 0 var(--amiga-white),
+                inset -3px -3px 0 var(--amiga-dark-gray),
+                0 6px 0 rgba(0,0,0,0.35);
+        }
+
+        .navbar-brand-custom {
+            color: var(--amiga-black) !important;
+            font-weight: 900;
+            font-size: 1.5rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-shadow: 2px 2px 0 var(--amiga-light-blue);
+        }
+
+        .navbar-brand-custom:hover {
+            color: var(--amiga-red) !important;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--amiga-blue);
+            color: var(--amiga-white);
+            border: 3px solid var(--amiga-black);
+            box-shadow:
+                inset 3px 3px 0 var(--amiga-light-blue),
+                inset -3px -3px 0 #002750;
+            font-size: 1.25rem;
+        }
+
+        .nav-link-custom {
+            color: var(--amiga-black) !important;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .user-badge {
+            background: var(--amiga-white);
+            color: var(--amiga-black);
+            border: 3px solid var(--amiga-black);
+            padding: 0.5rem 1rem;
+            font-weight: 900;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                inset -2px -2px 0 var(--amiga-dark-gray),
+                4px 4px 0 rgba(0,0,0,0.45);
+        }
+
+        .btn-gradient {
+            background: var(--amiga-orange) !important;
+            border: 3px solid var(--amiga-black) !important;
+            color: var(--amiga-black) !important;
+            font-weight: 900;
+            text-transform: uppercase;
+            border-radius: 0 !important;
+            padding: 0.55rem 1.4rem !important;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow:
+                inset 3px 3px 0 #ffd28a,
+                inset -3px -3px 0 #9b4b00,
+                4px 4px 0 rgba(0,0,0,0.55);
+            transition: none;
+        }
+
+        .btn-gradient:hover {
+            background: var(--amiga-red) !important;
+            color: var(--amiga-white) !important;
+            transform: translate(2px, 2px);
+            box-shadow:
+                inset 3px 3px 0 #ff8f8f,
+                inset -3px -3px 0 #6b0000,
+                2px 2px 0 rgba(0,0,0,0.55);
+        }
+
+        main {
+            min-height: calc(100vh - 150px);
+            padding: 2rem 0;
+        }
+
+        main .container-xxl {
+            background: rgba(184,184,184,0.9);
+            color: var(--amiga-black);
+            border: 4px solid var(--amiga-black);
+            box-shadow:
+                inset 4px 4px 0 var(--amiga-white),
+                inset -4px -4px 0 var(--amiga-dark-gray),
+                8px 8px 0 rgba(0,0,0,0.45);
+            padding: 2rem;
+            min-height: 360px;
+        }
+
+        main .container-xxl::before {
+            content: "DevBoard Workbench";
+            display: block;
+            background: var(--amiga-blue);
+            color: var(--amiga-white);
+            border: 3px solid var(--amiga-black);
+            padding: 0.4rem 0.75rem;
+            margin-bottom: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-custom {
+            background: var(--amiga-gray) !important;
+            border-top: 4px solid var(--amiga-black);
+            padding: 2rem 0;
+            box-shadow:
+                inset 3px 3px 0 var(--amiga-white),
+                inset -3px -3px 0 var(--amiga-dark-gray);
+        }
+
+        .footer-text {
+            color: var(--amiga-black);
+            font-size: 0.95rem;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .social-icons-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon-btn {
+            width: 46px;
+            height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--amiga-blue);
+            color: var(--amiga-white);
+            border: 3px solid var(--amiga-black);
+            text-decoration: none;
+            font-size: 1.15rem;
+            box-shadow:
+                inset 3px 3px 0 var(--amiga-light-blue),
+                inset -3px -3px 0 #002750,
+                4px 4px 0 rgba(0,0,0,0.55);
+        }
+
+        .social-icon-btn:hover {
+            background: var(--amiga-orange);
+            color: var(--amiga-black);
+            transform: translate(2px, 2px);
+            box-shadow:
+                inset 3px 3px 0 #ffd28a,
+                inset -3px -3px 0 #9b4b00,
+                2px 2px 0 rgba(0,0,0,0.55);
+        }
+
+        .navbar-toggler {
+            border: 3px solid var(--amiga-black);
+            color: var(--amiga-black);
+            border-radius: 0;
+            background: var(--amiga-white);
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                inset -2px -2px 0 var(--amiga-dark-gray);
+        }
+
+        .navbar-toggler:focus {
+            box-shadow:
+                inset 2px 2px 0 #ffffff,
+                inset -2px -2px 0 var(--amiga-dark-gray);
+        }
+
+        @media (max-width: 576px) {
+            .user-badge {
+                display: none !important;
+            }
+
+            .navbar-brand-custom {
+                font-size: 1.15rem;
+            }
+
+            main {
+                padding: 1rem 0;
+            }
+
+            main .container-xxl {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid px-4 px-lg-5">
+            <a class="navbar-brand-custom" href="/">
+                <div class="logo-icon">
+                    <i class="fas fa-th-large"></i>
+                </div>
+                <span>DevBoard</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                    aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="user-badge">
+                                <i class="fas fa-user-circle"></i>
+                                <span>{{ user.username }}</span>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{% url 'logout' %}" method="post" class="mb-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-gradient nav-link-custom">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Wyloguj</span>
+                                </button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{% url 'login' %}" class="btn btn-gradient">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Zaloguj</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid">
+        <div class="container-xxl">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer-custom">
+        <div class="container-fluid">
+            <div class="text-center">
+                <p class="footer-text mb-2">
+                    <i class="fas fa-copyright"></i> 2026 DevBoard. Wszystkie prawa zastrzeżone.
+                </p>
+
+                <div class="social-icons-container">
+                    <a href="#" class="social-icon-btn" title="GitHub" aria-label="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-icon-btn" title="Twitter" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon-btn" title="LinkedIn" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

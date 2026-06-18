@@ -372,12 +372,29 @@
         <h2>
             <i class="fas fa-tasks me-2"></i>Zadania
         </h2>
-        <button class="btn-add-task">
+        <button action="{% url 'devboard:task-create' %}?project={{ project.pk }}" class="btn-add-task">
             <i class="fas fa-plus-circle"></i>
             <span>Dodaj zadanie</span>
         </button>
+        <a href="{% url 'devboard:task-create' %}?project={{ project.pk }}class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i>
+        <span>Dodaj zadanie</span>
+    </a>
     </div>
 
+<div class="tasks-section">
+    <div class="tasks-header">
+        <h2>
+            <i class="fas fa-tasks me-2"></i>Zadania
+        </h2>
+
+        <a href="{% url 'devboard:task-create' %}?project={{ project.pk }}"
+           class="btn-add-task">
+            <i class="fas fa-plus-circle"></i>
+            <span>Dodaj zadanie</span>
+        </a>
+    </div>
+</div>
     {% if tasks %}
         <div class="tasks-table">
             <!-- Table Header -->

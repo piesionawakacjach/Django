@@ -1,0 +1,44 @@
+{% extends 'base2.html' %}
+
+{% block content %}
+
+<div xmlns="http://www.w3.org/1999/html">
+    <div>
+
+        <h2> Nowe zadanie </h2>
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger mt-3">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}
+                {% if field.field.required %} <code> * </code> {% endif %}
+                </label>
+                {{ field }}
+
+
+                {% if field.errors %}
+                    <div class="alert alert-danger mt-1">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+
+
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-3">Utwórz zadanie</button>
+                <a href ="{% url 'devboard:lista-project' %}"> Anuluj</a>
+        </form>
+    </div>
+
+</div>
+{% endblock %}
