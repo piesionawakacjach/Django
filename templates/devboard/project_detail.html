@@ -1,0 +1,477 @@
+{% extends "base2.html" %}
+
+{% block title %}{{ project.name }} - DevBoard{% endblock %}
+
+{% block content %}
+<style>
+    .project-header {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 1.5rem;
+        padding: 3rem 2rem;
+        margin-bottom: 3rem;
+        color: white;
+    }
+
+    .project-header h1 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .project-header p {
+        font-size: 1.05rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .project-stats {
+        display: flex;
+        gap: 3rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-top: 0.25rem;
+    }
+
+    .tasks-section {
+        margin-top: 2rem;
+    }
+
+    .tasks-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .tasks-header h2 {
+        color: white;
+        font-weight: 700;
+        font-size: 1.75rem;
+        margin: 0;
+    }
+
+    .btn-add-task {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.75rem;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-add-task:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .tasks-table {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .tasks-table-header {
+        background: rgba(255, 255, 255, 0.12);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: 2fr 1.2fr 1fr 1.2fr 1fr;
+        gap: 1.5rem;
+        color: white;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.85;
+    }
+
+    .task-item {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: 2fr 1.2fr 1fr 1.2fr 1fr;
+        gap: 1.5rem;
+        align-items: center;
+        transition: all 0.3s ease;
+        color: white;
+    }
+
+    .task-item:last-child {
+        border-bottom: none;
+    }
+
+    .task-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .task-title {
+        font-weight: 600;
+        font-size: 1.05rem;
+        word-break: break-word;
+    }
+
+    .task-title-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        width: fit-content;
+    }
+
+    .status-todo {
+        background: rgba(255, 193, 7, 0.2);
+        color: #FFD54F;
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .status-in_progress {
+        background: rgba(33, 150, 243, 0.2);
+        color: #64B5F6;
+        border: 1px solid rgba(33, 150, 243, 0.3);
+    }
+
+    .status-done {
+        background: rgba(76, 175, 80, 0.2);
+        color: #81C784;
+        border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .priority-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .priority-low {
+        background: rgba(76, 175, 80, 0.2);
+        color: #81C784;
+        border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .priority-medium {
+        background: rgba(255, 193, 7, 0.2);
+        color: #FFD54F;
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .priority-high {
+        background: rgba(244, 67, 54, 0.2);
+        color: #EF5350;
+        border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+
+    .assignee-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        width: fit-content;
+    }
+
+    .assignee-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .duedate-text {
+        font-size: 0.9rem;
+        opacity: 0.85;
+    }
+
+    .duedate-overdue {
+        color: #EF5350;
+        font-weight: 600;
+    }
+
+    .task-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+
+    .btn-action {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+
+    .btn-action:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .empty-tasks {
+        background: rgba(255, 255, 255, 0.08);
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 1rem;
+        padding: 3rem 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .empty-tasks-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.8;
+    }
+
+    .empty-tasks h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-tasks p {
+        opacity: 0.9;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 1200px) {
+        .tasks-table-header,
+        .task-item {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .project-header {
+            padding: 2rem 1.5rem;
+        }
+
+        .project-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .project-stats {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tasks-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .tasks-table-header,
+        .task-item {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+
+        .tasks-table-header {
+            padding: 1rem;
+        }
+
+        .task-item {
+            padding: 1rem;
+        }
+
+        .status-badge,
+        .assignee-badge,
+        .priority-badge {
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+<!-- Project Header -->
+<div class="project-header">
+    <h1>
+        <i class="fas fa-folder-open"></i>
+        {{ project.name }}
+    </h1>
+    {% if project.description %}
+        <p>{{ project.description }}</p>
+    {% else %}
+        <p><em>Brak opisu projektu</em></p>
+    {% endif %}
+    
+    <div class="project-stats">
+        <div class="stat-item">
+            <div class="stat-number">{{ tasks.count }}</div>
+            <div class="stat-label">Zadania łącznie</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ tasks|length }}</div>
+            <div class="stat-label">Aktywne</div>
+        </div>
+    </div>
+</div>
+
+<!-- Tasks Section -->
+<div class="tasks-section">
+    <div class="tasks-header">
+        <h2>
+            <i class="fas fa-tasks me-2"></i>Zadania
+        </h2>
+        <button class="btn-add-task">
+            <i class="fas fa-plus-circle"></i>
+            <span>Dodaj zadanie</span>
+        </button>
+    </div>
+
+    {% if tasks %}
+        <div class="tasks-table">
+            <!-- Table Header -->
+            <div class="tasks-table-header">
+                <div><i class="fas fa-tasks me-2"></i>Tytuł</div>
+                <div><i class="fas fa-flag me-2"></i>Priorytet</div>
+                <div><i class="fas fa-circle-notch me-2"></i>Status</div>
+                <div><i class="fas fa-user-circle me-2"></i>Przypisane do</div>
+                <div><i class="fas fa-calendar me-2"></i>Termin</div>
+            </div>
+
+            <!-- Tasks List -->
+            {% for task in tasks %}
+                <div class="task-item">
+                    <!-- Title -->
+                    <div class="task-title-icon">
+                        <span class="task-title">{{ task.title }}</span>
+                    </div>
+
+                    <!-- Priority -->
+                    <div>
+                        <span class="priority-badge priority-{% if task.priority == 1 %}low{% elif task.priority == 2 %}medium{% else %}high{% endif %}">
+                            {% if task.priority == 1 %}
+                                <i class="fas fa-arrow-down"></i> {{ task.get_priority_display }}
+                            {% elif task.priority == 2 %}
+                                <i class="fas fa-minus"></i> {{ task.get_priority_display }}
+                            {% else %}
+                                <i class="fas fa-arrow-up"></i> {{ task.get_priority_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <span class="status-badge status-{{ task.status }}">
+                            {% if task.status == "TODO" %}
+                                <i class="fas fa-circle"></i> {{ task.get_status_display }}
+                            {% elif task.status == "IN_PROGRESS" %}
+                                <i class="fas fa-circle-notch fa-spin"></i> {{ task.get_status_display }}
+                            {% else %}
+                                <i class="fas fa-check-circle"></i> {{ task.get_status_display }}
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <!-- Assignee -->
+                    <div>
+                        {% if task.assignee %}
+                            <div class="assignee-badge">
+                                <div class="assignee-avatar">
+                                    {{ task.assignee.username|first|upper }}
+                                </div>
+                                <span>{{ task.assignee.username }}</span>
+                            </div>
+                        {% else %}
+                            <div class="assignee-badge" style="opacity: 0.6;">
+                                <i class="fas fa-user-slash"></i>
+                                <span>Nie przypisane</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Due Date -->
+                    <div>
+                        {% if task.due_date %}
+                            <span class="duedate-text {% if task.is_overdue %}duedate-overdue{% endif %}">
+                                <i class="fas fa-calendar-alt"></i>
+                                {{ task.due_date|date:"d.m.Y" }}
+                                {% if task.is_overdue %}
+                                    <span style="margin-left: 0.5rem; color: #EF5350;"><i class="fas fa-exclamation-triangle"></i> Opóźnione</span>
+                                {% endif %}
+                            </span>
+                        {% else %}
+                            <span class="duedate-text" style="opacity: 0.6;">
+                                <i class="fas fa-clock"></i> Brak terminu
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-tasks">
+            <div class="empty-tasks-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <h3>Brak zadań</h3>
+            <p>Projekt nie ma jeszcze żadnych zadań. Stwórz pierwsze zadanie, aby zacząć!</p>
+            <button class="btn-add-task">
+                <i class="fas fa-plus-circle"></i>
+                <span>Stwórz pierwsze zadanie</span>
+            </button>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
