@@ -41,3 +41,6 @@ urlpatterns = [
     path("api/docs/redoc/", SpectacularRedocView.as_view(), name="redoc")
 ]
 
+urlpatterns += [
+    path("i18n/", include("django.conf.urls.i18n")),
+]

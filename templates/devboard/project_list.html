@@ -1,7 +1,7 @@
 {% extends "base2.html" %}
 
 {% block title %}Moje projekty - DevBoard{% endblock %}
-
+{% load i18n %}
 {% block content %}
 <style>
     .projects-hero {
@@ -208,7 +208,7 @@
 </style>
 
 <div class="projects-hero">
-    <h1><i class="fas fa-folder-open me-3"></i>Moje projekty</h1>
+    <h1><i class="fas fa-folder-open me-3"></i>{% trans "Moje projekty" %} </h1>
     <p><i class="fas fa-info-circle me-2"></i>Zarządzaj i organizuj swoje projekty w jednym miejscu</p>
 </div>
 

@@ -9,7 +9,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['id', 'author_name', 'body', 'created']
+        fields = ['id', 'task', 'author_name', 'body', 'created']
         read_only_fields = ['id', 'author_name', 'created']
 
 class TaskSerializer(serializers.ModelSerializer):

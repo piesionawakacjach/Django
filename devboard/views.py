@@ -11,6 +11,10 @@ from devboard.forms import TaskForm
 from devboard.models import Project, Task
 
 from django.db.models import Count
+
+from django.utils.translation import gettext_lazy as _
+
+
 # def index(request):
 #     return HttpResponse("<h1>Devboard - etap 1: scaffold!</h1>")
 
@@ -65,6 +69,8 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         return form
 
     def form_valid(self, form):
-        messages.success(self.request, f"Zadanie '{form.instance.title}' zostało utworzone.")
+        #messages.success(self.request, _(f"Zadanie '{form.instance.title}' zostało utworzone."))
+        messages.success(self.request, _(f"Zadanie zostało utworzone."))
+
         return super().form_valid(form)
 
