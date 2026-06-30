@@ -15,7 +15,7 @@ class TaskForm(forms.ModelForm):
             "assignee": forms.Select(attrs={"class": "form-control"}),
             "status": forms.Select(attrs={"class": "form-control"}),
             "priority": forms.Select(attrs={"class": "form-control"}),
-            "due_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "due_date": forms.DateInput(attrs={"class": "form-control", "type": "date"}, format="%Y-%m-%d"),
 
         }
 

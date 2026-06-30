@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from rest_framework.reverse import reverse_lazy
 from django.urls import reverse_lazy
 
@@ -115,3 +115,19 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         form.instance.owner = self.request.user
         messages.success(self.request, f"Projekt '{form.instance.name}' został utworzony.")
         return super().form_valid(form)
+
+# class TaskDeleteView(LoginRequiredMixin, DeleteView):
+#     model = Task
+#     template_name = "devboard/task_confirm_delete.html"
+#     #form_class = TaskForm
+#     success_url = reverse_lazy("devboard:lista-project")
+#
+#     def get_success_url(self):
+#         return reverse_lazy("devboard:project-detail", args=[self.object.project.id])
+
+
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
+    model = Task
+    template_name = "devboard/task_confirm_delete.html"
+    def get_success_url(self):
+        return reverse_lazy("devboard:project-detail", args=[self.object.project.id])

@@ -476,9 +476,12 @@
                     </div>
 
                     <!-- Actions -->
-                    <div>
+                    <div class="task-actions">
                         <a href="{% url 'devboard:task-update' task.pk %}" class="btn-action" title="Edytuj zadanie">
                             <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'devboard:task-delete' task.pk %}" class="btn-action" title="Usuń zadanie" onclick="return confirm('Czy na pewno chcesz usunąć to zadanie?')">
+                            <i class="fas fa-trash"></i>
                         </a>
                     </div>
                 </div>
