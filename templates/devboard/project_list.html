@@ -212,6 +212,10 @@
     <p><i class="fas fa-info-circle me-2"></i>Zarządzaj i organizuj swoje projekty w jednym miejscu</p>
 </div>
 
+          <a href="{% url 'devboard:project-create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nowy projekt
+            </a>
+
 {% if projects %}
     <div class="project-grid">
         {% for project in projects %}

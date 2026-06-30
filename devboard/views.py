@@ -7,7 +7,7 @@ from django.views.generic import ListView, DetailView, CreateView
 from rest_framework.reverse import reverse_lazy
 from django.urls import reverse_lazy
 
-from devboard.forms import TaskForm
+from devboard.forms import TaskForm, ProjectForm
 from devboard.models import Project, Task
 
 from django.db.models import Count
@@ -63,6 +63,9 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
     form_class = TaskForm
     success_url = reverse_lazy("devboard:lista-project")
 
+    def get_success_url(self):
+        return reverse_lazy("devboard:project-detail", args=[self.object.project.id])
+
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields["project"].queryset = Project.objects.filter(owner=self.request.user)
@@ -74,3 +77,13 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
+class ProjectCreateView(LoginRequiredMixin, CreateView):
+    model = Project
+    template_name = "devboard/project_create.html"
+    form_class = ProjectForm
+    success_url = reverse_lazy("devboard:lista-project")
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        messages.success(self.request, f"Projekt '{form.instance.name}' został utworzony.")
+        return super().form_valid(form)

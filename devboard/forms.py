@@ -1,7 +1,7 @@
 from click import clear
 from django import forms
 
-from devboard.models import Task
+from devboard.models import Task, Project
 
 
 class TaskForm(forms.ModelForm):
@@ -26,3 +26,13 @@ class TaskForm(forms.ModelForm):
         if priority == Task.Priority.HIGH and not due_date:
             raise forms.ValidationError("Zadanie o wysokim priorytecie musi mieć ustawiony termin wykonania.")
         return cleaned
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ["name", "description"]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": "5"}),
+        }
