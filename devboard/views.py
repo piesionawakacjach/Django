@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from rest_framework.reverse import reverse_lazy
 from django.urls import reverse_lazy
 
@@ -13,6 +13,9 @@ from devboard.models import Project, Task
 from django.db.models import Count
 
 from django.utils.translation import gettext_lazy as _
+
+
+from devboard.mixins import OwnerQuerysetMixin
 
 
 # def index(request):
@@ -29,14 +32,21 @@ class ProjectListView(LoginRequiredMixin, ListView):
     context_object_name = "projects"
 
 
-    def get_queryset(self):
+#    def get_queryset(self):
 #        try:
+#         return (
+#             Project.objects.filter(owner=self.request.user)
+#             .annotate(task_count=Count("tasks"))
+#             .order_by("-created_at")
+#         )
+
+
+    def get_queryset(self):
         return (
-            Project.objects.filter(owner=self.request.user)
+            super().get_queryset()
             .annotate(task_count=Count("tasks"))
             .order_by("-created_at")
         )
-
 #        except TypeError:
 #            return None
 
@@ -46,8 +56,8 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
     template_name = "devboard/project_detail.html"
     context_object_name = "project"
 
-    def get_queryset(self):
-        return Project.objects.filter(owner=self.request.user)
+ #   def get_queryset(self):
+ #       return Project.objects.filter(owner=self.request.user)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -76,6 +86,24 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, _(f"Zadanie zostało utworzone."))
 
         return super().form_valid(form)
+
+
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
+    model = Task
+    template_name = "devboard/task_create.html"
+    form_class = TaskForm
+
+    def get_success_url(self):
+        return reverse_lazy("devboard:project-detail", args=[self.object.project.id])
+    #
+    # def get_form(self, form_class=None):
+    #     form = super().get_form(form_class)
+    #     form.fields["project"].queryset = Project.objects.filter(owner=self.request.user)
+    #     return form
+    #
+    # def form_valid(self, form):
+    #     messages.success(self.request, _(f"Zadanie '{form.instance.title}' zostało zaktualizowane."))
+    #     return super().form_valid(form)
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
