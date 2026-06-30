@@ -1,0 +1,21 @@
+digraph Classes {
+	rankdir=LR
+	TaskInline [label=TaskInline shape=record]
+	ProjectAdmin [label="{ProjectAdmin|~ task_count()\l}" shape=record]
+	TaskAdmin [label="{TaskAdmin|~ status_badge()\l}" shape=record]
+	DevboardConfig [label="{DevboardConfig|~ ready()\l}" shape=record]
+	TaskForm [label="{TaskForm|~ clean()\l}" shape=record]
+	Meta [label=Meta shape=record]
+	Project [label="{Project|~ __str__()\l~ task_count()\l}" shape=record]
+	Task [label="{Task|~ __str__()\l~ is_overdue()\l}" shape=record]
+	Comment [label="{Comment|~ __str__()\l}" shape=record]
+	"Meta (models)" [label="Meta (models)" shape=record]
+	Status [label=Status shape=record]
+	Priority [label=Priority shape=record]
+	ProjectListView [label="{ProjectListView|~ get_queryset()\l}" shape=record]
+	ProjectDetailView [label="{ProjectDetailView|~ get_queryset()\l~ get_context_data()\l}" shape=record]
+	TaskCreateView [label="{TaskCreateView|~ get_form()\l~ form_valid()\l}" shape=record]
+	Migration [label=Migration shape=record]
+	TestTaskModel [label="{TestTaskModel|~ test_default_status_is_todo()\l~ test_str_contains_title()\l}" shape=record]
+	TestTaskCreateView [label="{TestTaskCreateView|~ test_create_task()\l}" shape=record]
+}

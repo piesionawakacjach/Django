@@ -1,0 +1,67 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-19 16:37+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\config\settings\base.py:80
+msgid "Polski"
+msgstr "Polish"
+
+#: .\config\settings\base.py:81
+msgid "English"
+msgstr "English"
+
+#: .\devboard\models.py:35
+msgid "Do zrobienia"
+msgstr "To do"
+
+#: .\devboard\models.py:36
+msgid "W trakcie"
+msgstr "In progress"
+
+#: .\devboard\models.py:37
+msgid "Ukończone"
+msgstr "Completed"
+
+#: .\devboard\models.py:40
+msgid "Niski"
+msgstr "Low"
+
+#: .\devboard\models.py:41
+msgid "Średni"
+msgstr "Medium"
+
+#: .\devboard\models.py:42
+msgid "Wysoki"
+msgstr "High"
+
+#: .\devboard\models.py:44
+msgid "Tytuł"
+msgstr "Title"
+
+#: .\devboard\models.py:45
+msgid "Opis"
+msgstr "Description"
+
+#: .\devboard\views.py:73
+msgid "Zadanie zostało utworzone."
+msgstr "Task has been created."
+
+#: .\templates\devboard\project_list.html:211
+msgid "Moje projekty"
+msgstr "My Projects"
