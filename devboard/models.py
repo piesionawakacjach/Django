@@ -1,6 +1,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.duration import duration_string
 from django.utils.translation import gettext_lazy as _
@@ -27,6 +28,11 @@ class Project(models.Model):
 
     def task_count(self) -> int:
         return self.tasks.count()
+
+    def get_absolute_url(self) -> str:
+        return reverse("devboard:project-detail", args=[self.pk])
+
+
 
 class TaskQuerySet(models.QuerySet):
     def for_user(self, user):
@@ -103,6 +109,8 @@ class Task(models.Model):
             return self.due_date < timezone.now().date()
         return False
 
+    def get_absolute_url(self):
+        return reverse("devboard:task-detail", args=[self.pk])
 
 class Comment(models.Model):
     task = models.ForeignKey(

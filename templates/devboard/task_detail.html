@@ -1,0 +1,156 @@
+{% extends "base2.html" %}
+
+{% block title %}Zadanie {{ task.title }} - DevBoard{% endblock %}
+
+{% block content %}
+{% load devboard_extras %}
+<style>
+    /* Reused styles from project_detail for full visual consistency */
+    .project-header {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 1.5rem;
+        padding: 2.5rem 2rem;
+        margin-bottom: 2.5rem;
+        color: white;
+    }
+
+    .project-header h1 {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .project-header p {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .task-detail-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        color: white;
+    }
+
+    .task-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .task-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .status-badge, .priority-badge, .assignee-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-weight: 600;
+    }
+
+    .priority-low { background: rgba(76,175,80,0.2); color:#81C784; border:1px solid rgba(76,175,80,0.3);} 
+    .priority-medium { background: rgba(255,193,7,0.2); color:#FFD54F; border:1px solid rgba(255,193,7,0.3);} 
+    .priority-high { background: rgba(244,67,54,0.2); color:#EF5350; border:1px solid rgba(244,67,54,0.3);} 
+
+    .task-actions { display:flex; gap:0.5rem; justify-content:flex-end; align-items:center; }
+    .btn-action { background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:white; width:40px; height:40px; border-radius:0.5rem; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+    .btn-action:hover { background: rgba(255,255,255,0.12); }
+
+    .btn-mark-done { background: rgba(76,175,80,0.25); border-color: rgba(76,175,80,0.45); }
+
+    @media (max-width:768px) {
+        .task-meta { grid-template-columns: 1fr; }
+        .task-actions { justify-content:flex-start; }
+    }
+</style>
+
+<!-- Task Header -->
+<div class="project-header">
+    <h1><i class="fas fa-thumbtack"></i> {{ task.title }}</h1>
+    {% if task.project %}
+        <p>Projekt: <a href="{% url 'devboard:project-detail' task.project.pk %}" style="color:#cbd5ff; text-decoration:underline">{{ task.project.name }}</a></p>
+    {% endif %}
+</div>
+
+<div class="task-detail-card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
+        <div style="flex:1;">
+            <div class="task-title">{{ task.title }}</div>
+            {% if task.description %}
+                <p style="margin-top:0.5rem; opacity:0.95">{{ task.description|linebreaksbr }}</p>
+            {% else %}
+                <p style="margin-top:0.5rem; opacity:0.6;"><em>Brak opisu</em></p>
+            {% endif %}
+
+            <div class="task-meta">
+                <div>
+                    <div style="margin-bottom:0.5rem; font-size:0.95rem; opacity:0.9;">Status</div>
+                    <div>{{ task|status_badge }}</div>
+                </div>
+
+                <div>
+                    <div style="margin-bottom:0.5rem; font-size:0.95rem; opacity:0.9;">Szczegóły</div>
+                    <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+                        <span class="priority-badge {% if task.priority == 1 %}priority-low{% elif task.priority == 2 %}priority-medium{% else %}priority-high{% endif %}">
+                            {% if task.priority == 1 %}
+                                <i class="fas fa-arrow-down"></i> {{ task.get_priority_display }}
+                            {% elif task.priority == 2 %}
+                                <i class="fas fa-minus"></i> {{ task.get_priority_display }}
+                            {% else %}
+                                <i class="fas fa-arrow-up"></i> {{ task.get_priority_display }}
+                            {% endif %}
+                        </span>
+
+                        <span class="assignee-badge">
+                            {% if task.assignee %}
+                                <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-weight:700;">{{ task.assignee.username|first|upper }}</div>
+                                <span>{{ task.assignee.username }}</span>
+                            {% else %}
+                                <i class="fas fa-user-slash"></i> Nie przypisane
+                            {% endif %}
+                        </span>
+
+                        <span style="font-size:0.95rem; opacity:0.9;">
+                            <i class="fas fa-calendar-alt"></i>
+                            {% if task.due_date %} {{ task.due_date|date:"d.m.Y" }} {% else %} Brak terminu {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column: actions -->
+        <div style="width:220px; display:flex; flex-direction:column; gap:0.75rem; align-items:flex-end;">
+            {% if task.status != "DONE" %}
+                <form method="POST" action="{% url 'devboard:task-status' task.pk %}" style="width:100%;">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="DONE">
+                    <button type="submit" class="btn-action btn-mark-done" style="width:100%; justify-content:center; padding:0.5rem 0; font-weight:700;"> <i class="fas fa-check me-2"></i> Zaznacz jako wykonany</button>
+                </form>
+            {% else %}
+                <div style="width:100%; text-align:center; opacity:0.9;">Zadanie ukończone</div>
+            {% endif %}
+
+            <div class="task-actions" style="width:100%;">
+                <a href="{% url 'devboard:task-update' task.pk %}" class="btn-action" title="Edytuj zadanie"> <i class="fas fa-edit"></i> </a>
+                <a href="{% url 'devboard:task-delete' task.pk %}" class="btn-action" title="Usuń zadanie" onclick="return confirm('Czy na pewno chcesz usunąć to zadanie?')"> <i class="fas fa-trash"></i> </a>
+                <a href="{% url 'devboard:project-detail' task.project.pk %}" class="btn-action" title="Powrót do projektu"> <i class="fas fa-folder-open"></i> </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

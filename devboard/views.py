@@ -72,6 +72,8 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
             .order_by("-priority", "due_date")
         )
         return ctx
+
+
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
     template_name = "devboard/task_create.html"
@@ -186,3 +188,21 @@ class TaskStatusUpdateView(LoginRequiredMixin, View):
 #         messages.success(request, f"Status zadania '{task.title}' został zaktualizowany.")
 #
 #         return redirect("devboard:project-detail", pk=task.project.pk)
+
+class TaskDetailView(LoginRequiredMixin, DetailView):
+    model = Task
+    template_name = "devboard/task_detail.html"
+    context_object_name = "task"
+
+ #   def get_queryset(self):
+ #       return Task.objects.filter(owner=self.request.user)
+
+    # def get_context_data(self, **kwargs):
+    #     ctx = super().get_context_data(**kwargs)
+    #     ctx["tasks"] = (
+    #         self.object.tasks
+    #         .select_related("assignee")
+    #         .order_by("-priority", "due_date")
+    #     )
+    #     return ctx
+    #
