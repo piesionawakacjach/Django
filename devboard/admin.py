@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Project, Task, Comment
+from .templatetags.devboard_extras import status_badge
 
 # admin.site.register(Project)
 #admin.site.register(Task)
@@ -36,7 +37,7 @@ class ProjectAdmin(admin.ModelAdmin):
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_display = (
-        "title", "status_badge", "status", "project", "priority",
+        "title", "status_badge_admin", "status", "project", "priority",
         "assignee", "due_date",
     )
     list_filter = ("status", "priority", "project", "assignee")
@@ -50,8 +51,12 @@ class TaskAdmin(admin.ModelAdmin):
         ("Metadane", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
     )
 
+#    admin.display()  <--------------------------- ?????????????????
+
+
     @admin.display(description="Status")
-    def status_badge(self, obj):
+    def status_badge_admin(self, obj):
+        return status_badge(obj)
         colors = {
             "TODO": "#6c757d",
             "IN_PROGRESS": "#0d6efd",
