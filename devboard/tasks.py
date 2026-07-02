@@ -1,12 +1,11 @@
-from celery import Celery, shared_task
+from celery import shared_task
 
 from devboard.models import Task
 
-app = Celery("")
 
 @shared_task
 def send_overdue_digest():
-    overdue = Task.objects.overdue()
+    overdue = Task.objects.is_overdue()
     content = f"Zadania z przekroczonym harmonogramem: {overdue}"
     print(content)
     return overdue.count()
