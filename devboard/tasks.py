@@ -9,3 +9,4 @@ def send_overdue_digest():
     content = f"Zadania z przekroczonym harmonogramem: {overdue}"
     print(content)
     return overdue.count()
+
